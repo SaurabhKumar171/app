@@ -1,0 +1,303 @@
+<script>
+var lang = "<?php echo $lang; ?>";
+
+function otp(){
+    var mobnum = '<?php echo $mobnum; ?>';
+    var oper = '<?php echo $oper; ?>';
+
+    var dataString='oper='+oper+'&mobnum='+mobnum;
+
+    var a1,a2;
+
+    if(lang=="en"){
+        a1 = "There was some error. Please try again.";
+        a2 = "Password sent successfully";
+    }
+    else if(lang=="fr"){
+        a1 = "Il y a eu une erreur. Veuillez réessayer.";
+        a2 = "Mot de passe envoyé avec succès";
+    }
+    else{
+        a1 = "كان هناك بعض الخطأ. حاول مرة اخرى.";
+        a2 = "تم إرسال كلمة المرور بنجاح";
+    }
+
+    $.ajax({
+        url:"<?php echo base_url(); ?>welcome/ma_password_resend",
+        data:dataString,
+        success:function(data){
+            data = data.replace(/(\r\n|\n|\r)/gm, "");
+            if(data=="success"){
+                alert(a2);
+                $("#a_pass").hide();
+            }
+            else{
+                alert(a1);
+            }
+        },
+        error: function(data) {
+            alert(a1);
+        }
+    });
+}
+function submit(){
+    var mobnum = '<?php echo $id; ?>';
+    //var mobnum = $("#mobnum").val();;
+    var otp = $("#pin").val();
+
+    var a1,a2,a3;
+
+    if(lang=="en"){
+        a1 = "There was some error. Please try again.";
+        a2 = "Please enter PIN";
+        a3 = "Incorrect password. Please try again.";
+    }
+    else if(lang=="fr"){
+        a1 = "Il y a eu une erreur. Veuillez réessayer.";
+        a2 = "Veuillez entrer le NIP";
+        a3 = "Mot de passe incorrect. Veuillez réessayer.";
+    }
+    else{
+        a1 = "كان هناك بعض الخطأ. حاول مرة اخرى.";
+        a2 = "الرجاء إدخال رقم التعريف الشخصي";
+        a3 = "كلمة سر خاطئة. حاول مرة اخرى.";
+    }
+
+    if(otp==''){
+        alert(a2);
+    }
+    else{
+        var dataString='mobnum='+mobnum+'&pass='+otp;
+        $.ajax({
+            url:"<?php echo base_url(); ?>welcome/ma_password_verify",
+            data:dataString,
+            success:function(data){
+                data = data.replace(/(\r\n|\n|\r)/gm, "");
+                if(data=="success"){
+                    window.location.href="<?php echo base_url().'welcome/ma_home?mobnum='.$mobnum; ?>";
+                }
+                else{
+                    alert(a3);
+                }
+            },
+            error: function(data) {
+                alert(a1);
+            }
+        }); 
+    }  
+}
+</script>
+<body>
+<?php if($lang=="en"){ ?>
+<div id="waiting" style="display:none;"></div>
+<div id="spinner"></div>
+
+<div class="container" id="en_secion">
+
+<div class="row">
+    <center><img class="logo" alt="mComics"  src="https://mcomics.club/images/NewImages/Logo.png" style="width:175px;"></center>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="mobnum" placeholder="<?php echo $id; ?>" readonly />
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="pin" placeholder="Enter Password" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength='4' />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center>
+            <div class="col-md-4"><h5><b>1 day FREE trail then <?php echo $subtype; ?> (auto-renewal)</b></h5></div>
+
+        </center>
+        <div class="col-md-4"></div>
+    </div>
+</div> -->
+
+<!-- <div style="margin-top:30px;"></div> -->
+<div class="row">
+<div class="col-md-12">
+<div class="result" style="color:#000;text-align:center;">&nbsp;</div>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<button type="button" class="form-control subscribe_btn" onclick="submit()"><b>Login</b></button>
+</div>
+</div>
+</div>
+
+<div class="row">
+    <center><a class="sub-btn" href="javascript:void(0);" id='a_pass' onclick="otp()">Resend Password</a></center>
+</div>
+
+ <!-- End of row -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center><div class="col-md-4"><p class="subscription_det"><?php echo $disclaimer; ?></p></div></center>
+        <div class="col-md-4"></div>
+    </div>
+</div> <!-- End of row -->
+<div style="height: 50px;"></div>
+</div> <!-- End of  English section container -->
+<?php }else if($lang=="fr"){ ?>
+<div id="waiting" style="display:none;"></div>
+<div id="spinner"></div>
+
+<div class="container" id="en_secion">
+
+<div class="row">
+    <center><img class="logo" alt="mComics"  src="https://mcomics.club/images/NewImages/Logo.png" style="width:175px;"></center>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="mobnum" placeholder="<?php echo $id; ?>" readonly />
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="pin" placeholder="Entrer le mot de passe" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength='4' />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center>
+            <div class="col-md-4"><h5><b>1 day FREE trail then <?php echo $subtype; ?> (auto-renewal)</b></h5></div>
+
+        </center>
+        <div class="col-md-4"></div>
+    </div>
+</div> -->
+
+<!-- <div style="margin-top:30px;"></div> -->
+<div class="row">
+<div class="col-md-12">
+<div class="result" style="color:#000;text-align:center;">&nbsp;</div>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<button type="button" class="form-control subscribe_btn" onclick="submit()"><b>Connexion</b></button>
+</div>
+</div>
+</div>
+
+<div class="row">
+    <center><a class="sub-btn" href="javascript:void(0);" id='a_pass' onclick="otp()">renvoyer Mot de passe</a></center>
+</div>
+
+ <!-- End of row -->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center><div class="col-md-4"><p class="subscription_det"><?php echo $disclaimer; ?></p></div></center>
+        <div class="col-md-4"></div>
+    </div>
+</div> <!-- End of row -->
+<div style="height: 50px;"></div>
+</div> <!-- End of  English section container -->
+<?php }else{ ?>
+
+<!-- #########################  Arabic ############################## -->
+<div class="container" id="ar_secion">
+<div class="row">
+    <center><img class="logo" alt="mComics"  src="https://mcomics.club/images/NewImages/Logo.png" style="width:175px;"></center>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="mobnum" placeholder="<?php echo $id; ?>" readonly />
+            </div>
+        </div>
+    </div>
+</div>
+</br>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="left-inner-addon ">
+                <input type='text' class="form-control" id="pin" placeholder="أدخل كلمة المرور" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength='4' />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="row" dir="rtl">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center>
+            <div class="col-md-4"><h5><b><?php echo $pack; ?></b></h5></div>
+
+        </center>
+        <div class="col-md-4"></div>
+    </div>
+</div> -->
+
+<div class="row">
+<div class="col-md-12">
+<div class="result" style="color:#000;text-align:center;">&nbsp;</div>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<button type="button" class="form-control subscribe_btn" onclick="submit()"><b>تسجيل الدخول</b></button>
+</div>
+</div>
+</div>
+
+<div class="row">
+    <center><a class="sub-btn" href="javascript:void(0);" id='a_pass' onclick="otp()">إعادة إرسال كلمة المرور</a></center>
+</div>
+
+ <!-- End of row -->
+
+<div class="row" dir="rtl">
+    <div class="col-md-12">
+        <div class="col-md-4"></div>
+        <center><div class="col-md-4"><p class="subscription_det"><?php echo $disclaimer; ?></p></div></center>
+        <div class="col-md-4"></div>
+    </div>
+</div> <!-- End of row -->
+<div style="height: 50px;"></div>
+</div> <!-- End of  Arabic section container -->
+<?php } ?>
+</body>
+</html>
